@@ -1,3 +1,8 @@
+const socket = io();
+
+socket.on('message', ({ author, content }) => addMessage(author, content))
+socket.on('userConnect', (name) => addMessage('Chat Bot', `${name} has joined the conversation!`))
+socket.on('userDisconnect', (name) => addMessage('Chat Bot', `${name} has left the conversation... :(`))
 
 const selectors = {
   loginForm: 'welcome-form',
@@ -23,6 +28,7 @@ const login = (e) => {
     userName = userNameInput.value;
     loginForm.classList.remove('show');
     messagesSection.classList.add('show');
+    socket.emit('join', { author: userName })
   } else {
     alert('You must type your name');
   }
@@ -32,10 +38,10 @@ function addMessage(author, content) {
   const message = document.createElement('li');
   message.classList.add('message');
   message.classList.add('message--received');
-  if(author === userName) message.classList.add('message--self');
+  if (author === userName) message.classList.add('message--self');
   message.innerHTML = `
-    <h3 class="message__author">${userName === author ? 'You' : author }</h3>
-    <div class="message__content">
+    <h3 class="message__author">${userName === author ? 'You' : author}</h3>
+    <div class=${author == 'Chat Bot' ? "message_content-bot" : "message_content"}>
       ${content}
     </div>
   `;
@@ -44,11 +50,15 @@ function addMessage(author, content) {
 
 const sendMessage = (e) => {
   e.preventDefault();
-  if (messageContentInput.value.length > 0) {
-    addMessage(userName, messageContentInput.value);
-    messageContentInput.value = null;
-  } else {
-    alert('You must type a message');
+  let messageContent = messageContentInput.value;
+
+  if (!messageContent.length) {
+    alert('You have to type something!');
+  }
+  else {
+    addMessage(userName, messageContent);
+    socket.emit('message', { author: userName, content: messageContent })
+    messageContentInput.value = '';
   }
 }
 
@@ -59,4 +69,3 @@ loginForm.addEventListener('submit', (e) => {
 addMessageForm.addEventListener('submit', (e) => {
   sendMessage(e);
 })
-

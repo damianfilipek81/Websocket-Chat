@@ -18,7 +18,8 @@
   },
   "homepage": "https://github.com/damianfilipek81/websocket-chat#readme",
   "dependencies": {
-    "express": "^4.17.1"
+    "express": "^4.17.1",
+    "socket.io": "^2.2.0"
   },
   "devDependencies": {
     "nodemon": "^2.0.7"
