@@ -1,3 +1,3 @@
-![](images/readme1.png)
-![](images/readme2.png)
-![](images/readme3.png)
+![](Images/readme1.png)
+![](Images/readme2.png)
+![](Images/readme3.png)
